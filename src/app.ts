@@ -4,8 +4,8 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import { config } from "./config/config.ts";
 import type { Application, Request, Response } from "express";
-import { ApiError } from "./utils/apiError.ts";
 import { errorHandler } from "./middlewares/errorHandler.ts";
+import { InternalServerError } from "./utils/errors/httpErrors.ts";
 
 const app: Application = express();
 
@@ -22,12 +22,12 @@ app.use(
 );
 app.use(cookieParser());
 
-app.get("/helth", (req: Request, res: Response) => {
-  throw new ApiError("something went wrong", 500);
+app.get("/", (req: Request, res: Response) => {
+  throw new InternalServerError("something went wrong");
   // throw new ApiError("something went wrong", 500);
   res.send("Hello World!");
 });
 
-app.use(errorHandler)
+app.use(errorHandler);
 
 export default app;
