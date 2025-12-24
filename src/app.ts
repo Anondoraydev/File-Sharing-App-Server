@@ -1,9 +1,10 @@
-import express from "express";
-import helmet from "helmet";
-const app = express();
+import express, { type Application } from "express";
 import cors from "cors";
-import { config } from "./config/config.ts";
+import helmet from "helmet";
 import cookieParser from "cookie-parser";
+import { config } from "./config/config.ts";
+
+const app: Application = express();
 
 app.use(express.static("public"));
 app.use(express.json());
