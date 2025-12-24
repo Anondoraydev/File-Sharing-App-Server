@@ -3,7 +3,9 @@ import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import { config } from "./config/config.ts";
-import type { Application, Request, Response } from "express"; // { Application } from "express";
+import type { Application, Request, Response } from "express";
+import { ApiError } from "./utils/apiError.ts";
+import { errorHandler } from "./middlewares/errorHandler.ts";
 
 const app: Application = express();
 
@@ -15,13 +17,17 @@ app.use(
   cors({
     origin: config.APP_URL,
     credentials: true,
-    maxAge: 86400,
+    maxAge: 3600,
   })
 );
 app.use(cookieParser());
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/helth", (req: Request, res: Response) => {
+  throw new ApiError("something went wrong", 500);
+  // throw new ApiError("something went wrong", 500);
   res.send("Hello World!");
 });
+
+app.use(errorHandler)
 
 export default app;
