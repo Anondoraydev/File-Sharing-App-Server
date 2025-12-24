@@ -23,9 +23,9 @@ app.use(
 app.use(cookieParser());
 
 app.get("/", (req: Request, res: Response) => {
-  throw new InternalServerError("something went wrong");
+  // throw new InternalServerError("something went wrong");
   // throw new ApiError("something went wrong", 500);
-  res.send("Hello World!");
+  return res.send("Server is running!!!");
 });
 
 app.use(errorHandler);
