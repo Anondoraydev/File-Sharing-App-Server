@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import { config } from "./config/config.ts";
 import type { Application, Request, Response } from "express";
 import { errorHandler } from "./middlewares/errorHandler.ts";
-import { InternalServerError } from "./utils/errors/httpErrors.ts";
+import userRouter from "./routes/auth.route.ts";
 
 const app: Application = express();
 
@@ -27,6 +27,8 @@ app.get("/", (req: Request, res: Response) => {
   // throw new ApiError("something went wrong", 500);
   return res.send("Server is running!!!");
 });
+
+app.use("/api/v1/", userRouter);
 
 app.use(errorHandler);
 
