@@ -1,4 +1,4 @@
-interface IUser {
+export interface IUser {
   _id: Types.ObjectId;
   displayName: string;
   name: string;

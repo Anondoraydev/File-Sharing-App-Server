@@ -1,29 +1,29 @@
-
 import { config } from "../config/config.ts";
 import { ApiError } from "../utils/errors/apiError.ts";
 import type { NextFunction, Request, Response } from "express";
 
 export const errorHandler = (
-  err: any,
-  req: Request,
+  err: Error | ApiError,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   if (err instanceof ApiError) {
     return res.status(err.statusCode).json({
       name: err.name,
-      status: err.status,
+      success: err.status,
       message: err.message,
-      ...(config.NODE_ENV == "development" && { stack: err.stack }),
+      errors: err.errors,
+      ...(config.NODE_ENV !== "production" && { stack: err.stack }),
     });
   }
 
-  const message = err instanceof Error ? err.message : "Internal Server Error";
   return res.status(500).json({
-    name: err.name,
+    name: err instanceof Error ? err.name : "Error",
     success: false,
-    message,
-    ...(config.NODE_ENV == "development" && {
+    message: err instanceof Error ? err.message : "Internal Server Error",
+    errors: {},
+    ...(config.NODE_ENV !== "production" && {
       stack: err instanceof Error ? err.stack : String(err),
     }),
   });

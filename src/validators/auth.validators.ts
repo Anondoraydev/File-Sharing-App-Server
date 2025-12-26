@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const createUserZodSchema = z.object({
+export const ZRagisterUser = z.object({
   displayName: z.string({ error: "display name is required" }),
   email: z.string({
     error: "email is required",

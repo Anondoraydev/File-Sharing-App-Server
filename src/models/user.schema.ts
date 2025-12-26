@@ -1,8 +1,8 @@
 import { Schema, model, models } from "mongoose";
-import type { Document } from "mongoose";
 import bcryptjs from "bcryptjs";
 import { config } from "../config/config.ts";
 import { sign } from "jsonwebtoken";
+import type { IUser } from "../types/schema";
 
 // Schema
 const userSchema = new Schema<IUser>(

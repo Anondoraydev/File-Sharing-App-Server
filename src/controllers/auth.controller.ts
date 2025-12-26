@@ -1,11 +1,17 @@
-import type { Request, Response } from "express";
-import { createUserZodSchema } from "../validators/auth.validators.ts";
+import type { NextFunction, Request, Response } from "express";
+import { registerService } from "../services/register.service.ts";
 
-const registerController = async (req: Request, res: Response) => {
-  const userData = req.body;
-  const result = createUserZodSchema.safeParse(userData);
+const register = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await registerService(req.body);
 
-  res.json(result.error!.issues);
+    return res.status(201).json({
+      success: true,
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
-export { registerController };
+export const authController = { register };

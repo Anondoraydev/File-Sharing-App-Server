@@ -1,68 +1,66 @@
-import e from "express";
-import { ApiError } from "./apiError.ts";
+// errors/httpErrors.ts
 
+import { ApiError } from "./apiError";
+
+/**
+ * 400 Bad Request
+ */
 export class BadRequestError extends ApiError {
-  constructor(message: string = "Bad Request") {
-    super(message, 400);
+  constructor(errors?: Record<string, any>, message = "Bad request") {
+    super(message, 400, errors);
   }
 }
 
-export class NotFoundError extends ApiError {
-  constructor(message: string = "Not Found") {
-    super(message, 404);
-  }
-}
-
-export class InternalServerError extends ApiError {
-  constructor(message: string = "Internal Server Error") {
-    super(message, 500);
-  }
-}
-
+/**
+ * 401 Unauthorized
+ */
 export class UnauthorizedError extends ApiError {
-  constructor(message: string = "Unauthorized") {
-    super(message, 401);
+  constructor(errors?: Record<string, any>, message = "Unauthorized") {
+    super(message, 401, errors);
   }
 }
 
+/**
+ * 403 Forbidden
+ */
 export class ForbiddenError extends ApiError {
-  constructor(message: string = "Forbidden") {
-    super(message, 403);
+  constructor(errors?: Record<string, any>, message = "Forbidden") {
+    super(message, 403, errors);
   }
 }
 
+/**
+ * 422 Validation Error
+ */
+export class ValidationError extends ApiError {
+  constructor(errors?: Record<string, any>, message = "Validation error") {
+    super(message, 422, errors);
+  }
+}
+
+/**
+ * 404 Not Found
+ */
+export class NotFoundError extends ApiError {
+  constructor(errors?: Record<string, any>, message = "Not found") {
+    super(message, 404, errors);
+  }
+}
+
+/**
+ * 409 Conflict
+ */
 export class ConflictError extends ApiError {
-  constructor(message: string = "Conflict") {
-    super(message, 409);
+  constructor(errors?: Record<string, any>, message = "Conflict") {
+    super(message, 409, errors);
   }
 }
 
-export class PaymentRequiredError extends ApiError {
-  constructor(message: string = "Payment Required") {
-    super(message, 402);
-  }
-}
-
-export class TooManyRequestsError extends ApiError {
-  constructor(message: string = "Too Many Requests") {
-    super(message, 429);
-  }
-}
-
-export class ServiceUnavailableError extends ApiError {
-  constructor(message: string = "Service Unavailable") {
-    super(message, 503);
-  }
-}
-
-export class GatewayTimeoutError extends ApiError {
-  constructor(message: string = "Gateway Timeout") {
-    super(message, 504);
-  }
-}
-
-export class NetworkAuthenticationRequiredError extends ApiError {
-  constructor(message: string = "Network Authentication Required") {
-    super(message, 511);
+/**
+ * 500 Internal Server Error
+ */
+export class InternalServerError extends ApiError {
+  constructor(errors?: Record<string, any>, message = "Internal server error") {
+    super(message, 500, errors);
   }
 }
