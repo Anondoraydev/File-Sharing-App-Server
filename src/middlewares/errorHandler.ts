@@ -4,26 +4,26 @@ import type { NextFunction, Request, Response } from "express";
 
 export const errorHandler = (
   err: Error | ApiError,
-  _req: Request,
+  req: Request,
   res: Response,
-  _next: NextFunction
+  next: NextFunction
 ) => {
   if (err instanceof ApiError) {
     return res.status(err.statusCode).json({
       name: err.name,
-      success: err.status,
+      status: err.status,
       message: err.message,
       errors: err.errors,
-      ...(config.NODE_ENV !== "production" && { stack: err.stack }),
+      ...(config.NODE_ENV == "development" && { stack: err.stack }),
     });
   }
 
+  const message = err instanceof Error ? err.message : "Internal Server Error";
   return res.status(500).json({
-    name: err instanceof Error ? err.name : "Error",
+    name: err.name,
     success: false,
-    message: err instanceof Error ? err.message : "Internal Server Error",
-    errors: {},
-    ...(config.NODE_ENV !== "production" && {
+    message,
+    ...(config.NODE_ENV == "development" && {
       stack: err instanceof Error ? err.stack : String(err),
     }),
   });

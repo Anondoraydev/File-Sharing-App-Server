@@ -1,4 +1,4 @@
-import type { NextFunction, Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
 import { registerService } from "../services/register.service.ts";
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
@@ -10,7 +10,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
       data: result,
     });
   } catch (err) {
-    next(err);
+    next(err); // ❗ ONLY error goes here
   }
 };
 

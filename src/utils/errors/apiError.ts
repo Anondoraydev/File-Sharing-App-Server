@@ -1,7 +1,7 @@
 export class ApiError extends Error {
   statusCode: number;
   status: boolean;
-  errors: {};
+  errors: {} = {};
 
   constructor(
     message: string = "Internal Server Error",

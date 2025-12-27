@@ -1,13 +1,27 @@
+import type { IUserDocument} from "../models/user.schema.ts";
+import { ZRagisterUser } from "../validators/auth.validators.ts";
+import { ValidationError } from "../utils/errors/httpErrors.ts";
+import { User } from "../models/user.schema.ts";
+import type { IUser } from "../types/schema";
+import { formatErrors } from "../utils/formatErrors.ts";
 
-    import type { IUser } from "../types/schema";
-    import { ZRagisterUser } from "../validators/auth.validators.ts";
-    import { formetErrors } from "../utils/formetErrors.ts";
+export async function registerService(userData: IUser): Promise<IUserDocument> {
+  // Validate input
+  const result = ZRagisterUser.safeParse(userData);
+  if (!result.success) {
+    throw new ValidationError("Validation error", formatErrors(result.error));
+  }
 
-    export async function registerService(userData: IUser) {
-    const result = ZRagisterUser.safeParse(userData);
-        if (!result.success) {
-            return formetErrors(result.error);
-    }
+  const validatedData = result.data;
 
-    return result.success;
-    }
+  // Check if email exists
+  const isEmailExists = await User.findOne({ email: validatedData.email });
+  if (isEmailExists) {
+    throw new ValidationError("Email already exists");
+  }
+
+  // Create user
+  const user = await User.create(validatedData);
+
+  return user;
+}

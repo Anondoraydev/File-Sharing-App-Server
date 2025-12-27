@@ -1,5 +1,5 @@
 import z, { ZodError } from "zod";
 
-export function formetErrors(errors: ZodError) {
+export function formatErrors(errors: ZodError) {
   return z.flattenError(errors);
 }

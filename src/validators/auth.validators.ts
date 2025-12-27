@@ -21,8 +21,5 @@ export const ZRagisterUser = z.object({
     })
     .max(32, {
       error: "password must be at most 32 characters long",
-    }),
-  confirmPassword: z.string({
-    error: "confirm password is required",
-  }),
+    })
 });

@@ -8,3 +8,8 @@ export interface IUser {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface RegisterUserDTO {
+  id: string;
+  email: string;
+}
