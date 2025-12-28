@@ -3,11 +3,14 @@
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "bundler",
+
     "emitDeclarationOnly": true,
     "allowImportingTsExtensions": true,
+
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "strict": true,
@@ -17,5 +20,7 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

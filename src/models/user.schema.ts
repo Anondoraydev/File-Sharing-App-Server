@@ -1,0 +1,59 @@
+import mongoose, { Document } from "mongoose";
+import bcryptjs from "bcryptjs";
+import * as jwt from "jsonwebtoken"; // <- fixed
+import { config } from "../config/config.ts";
+
+export interface IUser {
+  displayName: string;
+  email: string;
+  password: string;
+  emailVarification?: Date | null;
+  refreshToken?: string | null;
+}
+
+export interface IUserDocument extends Document {
+  displayName: string;
+  email: string;
+  password: string;
+  emailVarification?: Date | null;
+  refreshToken?: string | null;
+  generateAccessToken(): string;
+  comparePassword(password: string): Promise<boolean>;
+}
+
+const { Schema, model, models } = mongoose;
+
+const userSchema = new Schema<IUserDocument>(
+  {
+    displayName: { type: String, required: true, trim: true },
+    email: { type: String, required: true, trim: true, unique: true },
+    password: { type: String, required: true, trim: true },
+    emailVarification: { type: Date, default: null },
+    refreshToken: { type: String, default: null },
+  },
+  { timestamps: true }
+);
+
+userSchema.pre("save", async function () {
+  if (this.isModified("password")) {
+    this.password = await bcryptjs.hash(this.password, 10);
+  }
+});
+
+userSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      displayName: this.displayName,
+      emailVarification: this.emailVarification,
+    },
+    config.ACCESS_TOKEN_SECRET,
+    { expiresIn: config.ACCESS_TOKEN_EXPIRES_IN }
+  );
+};
+
+userSchema.methods.comparePassword = async function (password: string) {
+  return bcryptjs.compare(password, this.password);
+};
+
+export const User = models.User || model<IUserDocument>("User", userSchema);
