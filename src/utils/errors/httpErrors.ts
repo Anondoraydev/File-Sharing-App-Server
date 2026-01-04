@@ -3,6 +3,12 @@ import { ApiError } from "./apiError.ts";
 
 type ErrorDetails = Record<string, unknown>;
 
+export class Success extends ApiError {
+  constructor(message = "Success", errors?: ErrorDetails) {
+    super(message, 200, errors);
+  }
+}
+
 /**
  * 400 Bad Request
  */

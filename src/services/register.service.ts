@@ -19,5 +19,8 @@ export async function registerService(userData: IUser): Promise<IUserDocument> {
     throw new ValidationError("Email already exists");
   }
 
-  return await User.create(validatedData);
+  const createdUser = await User.create(validatedData);
+  const user = createdUser.toObject();
+  delete user.password;
+  return user;
 }
