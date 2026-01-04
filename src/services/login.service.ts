@@ -41,7 +41,11 @@ export async function loginService(userData: unknown) {
     user.refreshToken = refreshToken;
     await user.save();
 
-    return { user, accessToken, refreshToken };
+    const finalUser = user.toObject();
+    delete finalUser.password;
+    delete finalUser.refreshToken;
+
+    return { user: finalUser, accessToken, refreshToken };
   } catch (err: any) {
     throw err;
   }
