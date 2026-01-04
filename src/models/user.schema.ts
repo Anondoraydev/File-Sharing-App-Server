@@ -1,6 +1,6 @@
 import mongoose, { Document } from "mongoose";
-import bcryptjs from "bcryptjs";
-import * as jwt from "jsonwebtoken"; // <- fixed
+import bcryptjs, { compare } from "bcryptjs";
+import jwt from "jsonwebtoken";
 import { config } from "../config/config.ts";
 
 export interface IUser {
@@ -19,6 +19,8 @@ export interface IUserDocument extends Document {
   refreshToken?: string | null;
   generateAccessToken(): string;
   comparePassword(password: string): Promise<boolean>;
+  checkPassword(password: string): Promise<boolean>;
+  generateRefreshToken(): string;
 }
 
 const { Schema, model, models } = mongoose;
@@ -40,6 +42,10 @@ userSchema.pre("save", async function () {
   }
 });
 
+userSchema.methods.checkPassword = async function (password: string) {
+  return await compare(password, this.password);
+};
+
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
@@ -49,6 +55,18 @@ userSchema.methods.generateAccessToken = function () {
     },
     config.ACCESS_TOKEN_SECRET,
     { expiresIn: config.ACCESS_TOKEN_EXPIRES_IN }
+  );
+};
+
+userSchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      displayName: this.displayName,
+      emailVarification: this.emailVarification,
+    },
+    config.REFRESH_TOKEN_SECRET,
+    { expiresIn: config.REFRESH_TOKEN_EXPIRES_IN }
   );
 };
 

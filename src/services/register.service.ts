@@ -1,26 +1,28 @@
-import type { IUserDocument } from "../models/user.schema.ts";
 import { ZRagisterUser } from "../validators/auth.validators.ts";
 import { ValidationError } from "../utils/errors/httpErrors.ts";
 import { User } from "../models/user.schema.ts";
-import type { IUser } from "../types/schema";
 import { formatErrors } from "../utils/formatErrors.ts";
 
-export async function registerService(userData: IUser): Promise<IUserDocument> {
+export async function registerService(userData: unknown) {
+  // 1️⃣ Validate incoming data with Zod
   const result = ZRagisterUser.safeParse(userData);
-
   if (!result.success) {
-    throw new ValidationError("Validation error", formatErrors(result.error));
+    throw new ValidationError("Validation error ", formatErrors(result.error));
   }
+  const user = result.data;
 
-  const validatedData = result.data;
-
-  const isEmailExists = await User.findOne({ email: validatedData.email });
-  if (isEmailExists) {
-    throw new ValidationError("Email already exists");
+  try {
+    // 2️⃣ Attempt to create the user (atomic, single DB hit)
+    const user = await User.create(result.data);
+    return {
+      id: user._id.toString(),
+      displayName: user.displayName,
+      email: user.email,
+    };
+  } catch (err: any) {
+    if (err.code === 11000 && err.keyPattern?.email) {
+      throw new ValidationError("Email already exists");
+    }
+    throw err;
   }
-
-  const createdUser = await User.create(validatedData);
-  const user = createdUser.toObject();
-  delete user.password;
-  return user;
 }
