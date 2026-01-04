@@ -24,12 +24,12 @@ app.use(cookieParser());
 
 app.get("/", (req: Request, res: Response) => {
   console.log(req.cookies);
-
   return res.send("Server is running!!!");
 });
 
 app.use("/api/v1/", router);
 
+// error handler attach করা হয়েছে last
 app.use(errorHandler);
 
 export default app;
