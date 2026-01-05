@@ -7,7 +7,6 @@ import {
 } from "../utils/errors/httpErrors.ts";
 import { User } from "../models/user.schema.ts";
 import { formatErrors } from "../utils/formatErrors.ts";
-import { th } from "zod/locales";
 
 export async function loginService(userData: unknown) {
   const result = ZLoginUser.safeParse(userData);
