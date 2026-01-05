@@ -5,7 +5,9 @@
     "moduleResolution": "bundler",
     "emitDeclarationOnly": true,
     "allowImportingTsExtensions": true,
-    
+
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
 
     "sourceMap": true,
     "declaration": true,
