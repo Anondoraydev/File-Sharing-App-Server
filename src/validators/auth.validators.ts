@@ -1,7 +1,5 @@
 import z from "zod";
 
-
-
 export const ZRagisterUser = z.object({
   displayName: z.string({ error: "display name is required" }),
   email: z.string({
@@ -23,7 +21,7 @@ export const ZRagisterUser = z.object({
     })
     .max(32, {
       error: "password must be at most 32 characters long",
-    })
+    }),
 });
 
 export const ZLoginUser = z.object({
@@ -46,5 +44,13 @@ export const ZLoginUser = z.object({
     })
     .max(32, {
       error: "password must be at most 32 characters long",
-    })
+    }),
+});
+
+export const envSchema = z.object({
+  SMTP_HOST: z.string(),
+  SMTP_PORT: z.coerce.number(),
+  SMTP_USER: z.string(),
+  SMTP_PASSWORD: z.string(),
+  SMTP_SECURE: z.coerce.boolean(),
 });
