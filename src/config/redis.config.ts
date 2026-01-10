@@ -1,21 +1,21 @@
 import { createClient } from "redis";
 import { config } from "./config.ts";
-const redisClient = createClient({
+
+const redisOptions: any = {
   username: config.REDIS_USERNAME,
-  password: config.REDIS_PASSWORD || "",
   socket: {
     host: config.REDIS_HOST,
     port: Number(config.REDIS_PORT),
   },
-});
+};
+
+if (config.REDIS_PASSWORD) redisOptions.password = config.REDIS_PASSWORD;
+
+export const redisClient = createClient(redisOptions);
 
 redisClient.on("error", (err) => console.log("Redis Client Error", err));
 
-// await client.set("foo", "bar");
-// const result = await client.get("foo");
-// console.log(result); // >>> bar
-
-export const connectedRedis = async () => {
+export const connectRedis = async () => {
   if (!redisClient.isOpen) {
     await redisClient.connect();
     console.log("Redis is connected");

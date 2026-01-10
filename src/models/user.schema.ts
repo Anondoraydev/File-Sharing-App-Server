@@ -7,7 +7,10 @@ export interface IUser {
   displayName: string;
   email: string;
   password: string;
-  emailVarification?: Date | null;
+  emailVerification: {
+    type: Boolean;
+    default: false;
+  };
   refreshToken?: string | null;
 }
 
@@ -15,7 +18,10 @@ export interface IUserDocument extends Document {
   displayName: string;
   email: string;
   password: string;
-  emailVarification?: Date | null;
+  emailVerification: {
+    type: Boolean;
+    default: false;
+  };
   refreshToken?: string | null;
   generateAccessToken(): string;
   comparePassword(password: string): Promise<boolean>;
@@ -30,7 +36,7 @@ const userSchema = new Schema<IUserDocument>(
     displayName: { type: String, required: true, trim: true },
     email: { type: String, required: true, trim: true, unique: true },
     password: { type: String, required: true, trim: true },
-    emailVarification: { type: Date, default: null },
+    emailVerification: { type: Boolean, default: false },
     refreshToken: { type: String, default: null },
   },
   { timestamps: true }
@@ -51,7 +57,7 @@ userSchema.methods.generateAccessToken = function () {
     {
       _id: this._id,
       displayName: this.displayName,
-      emailVarification: this.emailVarification,
+      emailVerification: this.emailVerification,
     },
     config.ACCESS_TOKEN_SECRET,
     { expiresIn: config.ACCESS_TOKEN_EXPIRES_IN }
@@ -63,7 +69,7 @@ userSchema.methods.generateRefreshToken = function () {
     {
       _id: this._id,
       displayName: this.displayName,
-      emailVarification: this.emailVarification,
+      emailVerification: this.emailVerification,
     },
     config.REFRESH_TOKEN_SECRET,
     { expiresIn: config.REFRESH_TOKEN_EXPIRES_IN }

@@ -4,7 +4,7 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
-  emailVarification: Date;
+  emailVerification: Date;
   accessToken: string;
   refreshToken: string;
 }

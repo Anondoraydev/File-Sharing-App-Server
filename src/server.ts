@@ -1,7 +1,7 @@
 // server.ts
 import app from "./app.ts";
 import { config } from "./config/config.ts";
-import { connectedRedis } from "./config/redis.config.ts";
+import { connectRedis } from "./config/redis.config.ts";
 import { connectDB } from "./db/index.ts";
 
 const server = async () => {
@@ -17,6 +17,6 @@ const server = async () => {
 };
 
 (async () => {
-  await connectedRedis();
+  await connectRedis();
   await server();
 })();
