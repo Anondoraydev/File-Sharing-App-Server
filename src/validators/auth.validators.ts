@@ -46,11 +46,3 @@ export const ZLoginUser = z.object({
       error: "password must be at most 32 characters long",
     }),
 });
-
-export const envSchema = z.object({
-  SMTP_HOST: z.string(),
-  SMTP_PORT: z.coerce.number(),
-  SMTP_USER: z.string(),
-  SMTP_PASSWORD: z.string(),
-  SMTP_SECURE: z.coerce.boolean(),
-});

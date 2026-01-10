@@ -33,7 +33,6 @@ const envSchema = z.object({
   SMTP_PORT: z.coerce.number().default(587),
   SMTP_USER: z.string().optional(),
   SMTP_PASSWORD: z.string().optional(),
-  SMTP_SECURE: z.coerce.boolean().default(false),
 });
 
 export type Config = z.infer<typeof envSchema>;
