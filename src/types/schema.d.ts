@@ -8,6 +8,13 @@ export interface IUser {
 }
 export interface IFileUser {
   _id: Types.ObjectId;
+  fileName: string;
+  path: string;
+  sender: string;
+  receiver: string;
+  size: number;
+  whoUploaded: { type: Schema.Types.ObjectId; ref: "User" };
+  uuid: string;
   originalName?: string;
   storedName: string;
   fileUrl: string;
@@ -16,7 +23,6 @@ export interface IFileUser {
   uploadedBy: Types.ObjectId;
   senderId?: Types.ObjectId;
   receiverId?: Types.ObjectId;
-  uuid: string;
 }
 export interface RegisterUserDTO {
   id: string;

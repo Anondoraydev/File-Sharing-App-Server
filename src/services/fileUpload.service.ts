@@ -19,6 +19,10 @@ export const fileUploadService = async (file: FileType) => {
     fileName: file.filename,
     path: file.path,
     size: file.size,
+    sender: file.originalname,
+    receiver: file.originalname,
+    whoUploaded: file.originalname,
+
     uuid: uuidv4(),
   });
   return fileUploadResult;
