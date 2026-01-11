@@ -24,8 +24,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         }
         return res.status(200).json({
           success: true,
-          message:
-            "OTP sent to your email. Please provide OTP to complete login.",
+          message: "You are not verified yet. Please check your email for OTP.",
         });
       }
 
