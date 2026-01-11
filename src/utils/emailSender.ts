@@ -21,7 +21,7 @@ export async function sendOTPEmail(email: string, otp: string) {
     from: `"Your App" <${config.SMTP_USER}>`,
     to: email,
     subject: "Your Secure OTP",
-    text: `Your OTP is ${otp}. It will expire in 5 minutes.`,
+    text: `Your OTP is ${otp}. It will expire in 2 minutes.`,
     html: `
 <div style="background:#0f172a; padding:48px 16px;">
   <table align="center" width="100%" cellpadding="0" cellspacing="0"
