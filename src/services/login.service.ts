@@ -15,20 +15,14 @@ export async function loginService(userData: unknown) {
   }
   const { email, password } = result.data;
 
-  const user = await User.findOne({ email });
-  if (!user) {
-    throw new NotFoundError("Email not found");
-  }
-
   try {
-    // 2️⃣ Attempt to create the user (atomic, single DB hit)
-    const user = await User.findOne({ email: result.data.email });
+    const user = await User.findOne({ email });
 
     if (!user) {
       throw new NotFoundError("Email not found", {});
     }
 
-    const isPasswordVerified = await user.checkPassword(result.data.password);
+    const isPasswordVerified = await user.checkPassword(password);
 
     if (!isPasswordVerified) {
       throw new ValidationError("Invalid password", {});
