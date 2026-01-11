@@ -6,6 +6,7 @@ import { config } from "./config/config.ts";
 import type { Application, Request, Response } from "express";
 import { errorHandler } from "./middlewares/errorHandler.ts";
 import router from "./routes/auth.route.ts";
+import fileShareRouter from "./routes/file.route.ts";
 
 const app: Application = express();
 
@@ -28,8 +29,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api/v1/", router);
-
-// error handler attach করা হয়েছে last
+app.use("/api/v1/", fileShareRouter);
 app.use(errorHandler);
 
 export default app;
