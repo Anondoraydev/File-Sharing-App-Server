@@ -11,9 +11,9 @@ const redisOptions: any = {
 
 if (config.REDIS_PASSWORD) redisOptions.password = config.REDIS_PASSWORD;
 
-export const redisClient = createClient(redisOptions);
+export const redisClient: any = createClient(redisOptions);
 
-redisClient.on("error", (err) => console.log("Redis Client Error", err));
+redisClient.on("error", (err: any) => console.log("Redis Client Error", err));
 
 export const connectRedis = async () => {
   if (!redisClient.isOpen) {
