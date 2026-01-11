@@ -1,7 +1,5 @@
-
 import type { Request, Response } from "express";
-import { verifyOTP } from "../utils/otpGenerator.ts";
-import { sendOTP } from "../services/otp.service.ts";
+import { sendOTP, verifyOTP } from "../services/otp.service.ts";
 
 export const otpController = {
   // Send OTP to email
@@ -32,7 +30,7 @@ export const otpController = {
         .json({ success: false, message: "Email and OTP are required" });
 
     try {
-      const valid = await verifyOTP(email, otp);
+      const valid = await verifyOTP(email, otp); // <- now from otp.service
       if (!valid)
         return res.status(400).json({ success: false, message: "Invalid OTP" });
 
