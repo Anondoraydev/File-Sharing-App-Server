@@ -7,10 +7,9 @@ const fileSchema = new Schema<IFileUser>({
   sender: { type: String, trim: true },
   receiver: { type: String, trim: true },
   size: { type: Number },
-  whoUploaded: { type: Schema.Types.ObjectId, ref: "User" },
+  whoUploaded: { type: String, trim: true, default: null },
   uuid: { type: String, trim: true },
 });
-
 
 export const File =
   mongoose.models.File || model<IFileUser>("File", fileSchema);
