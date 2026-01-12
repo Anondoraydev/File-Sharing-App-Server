@@ -1,3 +1,5 @@
+import type { UUIDTypes } from "uuid";
+
 export interface IUser {
   _id: Types.ObjectId;
   displayName: string;
@@ -14,7 +16,7 @@ export interface IFileUser {
   receiver: string;
   size: number;
   whoUploaded: { type: Schema.Types.ObjectId; ref: "User" };
-  uuid: string;
+  uuid: UUIDTypes;
   originalName?: string;
   storedName: string;
   fileUrl: string;
