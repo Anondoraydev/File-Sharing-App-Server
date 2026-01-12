@@ -7,7 +7,7 @@ export class OKResponse extends ApiSuccess {
 }
 
 export class CreatedResponse extends ApiSuccess {
-  constructor(message = "Resource created", data = {}) {
+  constructor(message = "Resource created", data = {}, downloadUrl?: string) {
     super(message, true, 201, data);
   }
 }
