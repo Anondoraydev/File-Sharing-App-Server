@@ -1,6 +1,6 @@
 import { config as dotenvConfig } from "dotenv";
 import { z } from "zod";
-import type { StringValue } from "ms";
+import type { StringValue } from "../types/config";
 
 dotenvConfig();
 
@@ -9,8 +9,8 @@ dotenvConfig();
  * Fails fast on boot if anything is missing or invalid
  */
 const envSchema = z.object({
-  PORT: z.coerce.number().default(5000),
-  APP_URL: z.string().default("http://localhost:5000"),
+  PORT: z.coerce.number().default(3000),
+  APP_URL: z.string().default("http://localhost:3000"),
   DATABASE_URL: z.string().min(1),
 
   NODE_ENV: z.enum(["development", "production"]).default("development"),
