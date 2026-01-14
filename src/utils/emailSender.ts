@@ -64,7 +64,7 @@ export async function sendOTPEmail(email: string, otp: string) {
         </div>
 
         <p style="margin:24px 0 0; font-size:14px; color:#6b7280;">
-          Expires in <b>5 minutes</b>
+          Expires in <b>2 minutes</b>
         </p>
       </td>
     </tr>
