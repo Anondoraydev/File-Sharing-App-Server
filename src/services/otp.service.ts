@@ -46,11 +46,9 @@ export async function verifyOTP(
 
   if (!storedOTP) return false;
   if (storedOTP !== inputOTP) return false;
-
-  // prevent replay
+ 
   await redisClient.del(key);
   try {
-    // mark user as verified in DB after successful OTP verification
     await User.findOneAndUpdate({ email }, { emailVerification: true });
   } catch (err) {
     console.error(
