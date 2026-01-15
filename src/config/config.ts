@@ -36,5 +36,4 @@ const envSchema = z.object({
 });
 
 export type Config = z.infer<typeof envSchema>;
-
 export const config: Config = envSchema.parse(process.env);

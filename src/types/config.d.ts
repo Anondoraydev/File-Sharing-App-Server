@@ -10,7 +10,7 @@ export type Config = {
   ACCESS_TOKEN_EXPIRES_IN: StringValue;
   REFRESH_TOKEN_EXPIRES_IN: StringValue;
   REDIS_PORT: number;
-  REDIS_PASSWORD?: string ;
+  REDIS_PASSWORD?: string;
   REDIS_URL?: string;
   REDIS_HOST: string;
   REDIS_USERNAME: string;
