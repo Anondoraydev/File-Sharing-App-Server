@@ -7,7 +7,9 @@ export const getMeController = async (
   next: NextFunction
 ) => {
   try {
-    const user = await getMeService.getMe(req as any);
+    const authHeader = req.headers.authorization || req.cookies.accessToken;
+
+    const user = await getMeService.getMe(authHeader as string);
     res.status(200).json({
       status: "success",
       message: "User fetched successfully",
