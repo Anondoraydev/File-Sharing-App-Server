@@ -1,11 +1,12 @@
 import type { Request, Response, NextFunction } from "express";
 import type { CookieOptions } from "express";
 import { sendOTP, verifyOTP } from "../services/otp.service.ts";
-import { loginService } from "../services/login.service.ts";
 import { registerService } from "../services/register.service.ts";
 import { User } from "../models/user.schema.ts";
-import { config } from "../config/config.ts";
+import { loginService } from "../services/login.service.ts";
+import { logoutService } from "../services/logout.service.ts";
 import { ApiSuccess } from "../utils/success/apiSuccess.ts";
+import { config } from "../config/config.ts";
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -72,8 +73,30 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
     return next(err);
   }
 };
+const logout = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const refreshToken = req.cookies?.refreshToken;
 
+    // logout only if refresh token exists
+    await logoutService(refreshToken);
+
+    const cookieOptions: CookieOptions = {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: config.NODE_ENV === "production",
+    };
+
+    res
+      .clearCookie("accessToken", cookieOptions)
+      .clearCookie("refreshToken", cookieOptions)
+      .status(200)
+      .json(new ApiSuccess("Logout successful", true, 200, {}));
+  } catch (err) {
+    next(err);
+  }
+};
 export const AuthController = {
   login,
   register,
+  logout,
 };
