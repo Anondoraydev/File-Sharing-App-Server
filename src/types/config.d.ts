@@ -1,17 +1,25 @@
-export type StringValue = string;
+export type Environment = "development" | "test" | "production";
 
-export type Config = {
+export interface Config {
   PORT: number;
+  NODE_ENV: Environment;
   APP_URL: string;
+
   DATABASE_URL: string;
-  NODE_ENV: "development" | "production";
-  ACCESS_TOKEN_SECRET: string;
-  REFRESH_TOKEN_SECRET: string;
+
+  ACCESS_TOKEN_SECRET: Secret;
   ACCESS_TOKEN_EXPIRES_IN: StringValue;
+
+  REFRESH_TOKEN_SECRET: Secret;
   REFRESH_TOKEN_EXPIRES_IN: StringValue;
-  REDIS_PORT: number;
-  REDIS_PASSWORD?: string;
-  REDIS_URL?: string;
+
   REDIS_HOST: string;
+  REDIS_PORT: number;
   REDIS_USERNAME: string;
-};
+  REDIS_PASSWORD: string;
+
+  SMTP_HOST: string;
+  SMTP_PORT: number;
+  SMTP_USER: string;
+  SMTP_PASSWORD: string;
+}

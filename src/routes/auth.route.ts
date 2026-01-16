@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 import { AuthController } from "../controllers/auth.controller.ts";
-import { otpController } from "../controllers/otp.controller.ts"; 
+import { otpController } from "../controllers/otp.controller.ts";
 import { getMeController } from "../controllers/getMe.controller.ts";
 
 const router: Router = express.Router();

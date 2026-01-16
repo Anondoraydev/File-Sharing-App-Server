@@ -52,7 +52,7 @@ userSchema.methods.checkPassword = async function (password: string) {
   return await compare(password, this.password);
 };
 
-userSchema.methods.generateAccessToken = function () {
+userSchema.methods.generateAccessToken = async function () {
   return jwt.sign(
     {
       _id: this._id,
@@ -60,7 +60,9 @@ userSchema.methods.generateAccessToken = function () {
       emailVerification: this.emailVerification,
     },
     config.ACCESS_TOKEN_SECRET,
-    { expiresIn: config.ACCESS_TOKEN_EXPIRES_IN }
+    {
+      expiresIn: config.ACCESS_TOKEN_EXPIRES_IN,
+    }
   );
 };
 
