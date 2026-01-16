@@ -1,39 +1,39 @@
-import { config as dotenvConfig } from "dotenv";
-import { z } from "zod";
-import type { StringValue } from "../types/config";
+import dotenv from "dotenv";
+import type { Config } from "../types/config.ts";
 
-dotenvConfig();
+dotenv.config();
 
-/**
- * Runtime env validation + static typing
- * Fails fast on boot if anything is missing or invalid
- */
-const envSchema = z.object({
-  PORT: z.coerce.number().default(3000),
-  APP_URL: z.string().default("http://localhost:3000"),
-  DATABASE_URL: z.string().min(1),
+const PORT = Number(process.env.PORT ?? 5000);
+const NODE_ENV = (process.env.NODE_ENV ?? "development") as
+  | "development"
+  | "production";
+const _config: Config = {
+  /* ================== App ================== */
+  PORT,
+  NODE_ENV,
+  APP_URL: process.env.APP_URL ?? `http://localhost:${PORT}`,
 
-  NODE_ENV: z.enum(["development", "production"]).default("development"),
+  /* ================== Database ================== */
+  DATABASE_URL: process.env.DATABASE_URL!,
 
-  ACCESS_TOKEN_SECRET: z.string().min(1),
-  REFRESH_TOKEN_SECRET: z.string().min(1),
+  /* ================== JWT ================== */
+  ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET || "",
 
-  ACCESS_TOKEN_EXPIRES_IN: z.string() as z.ZodType<StringValue>,
-  REFRESH_TOKEN_EXPIRES_IN: z.string() as z.ZodType<StringValue>,
+  ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN ?? "15m",
 
-  // Redis
-  REDIS_PORT: z.string().default("6379"),
-  REDIS_PASSWORD: z.string().optional(),
-  REDIS_URL: z.string().optional(),
-  REDIS_HOST: z.string().min(1),
-  REDIS_USERNAME: z.string().min(1),
+  REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || "",
+  REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN ?? "30d",
 
-  // SMTP
-  SMTP_HOST: z.string().optional(),
-  SMTP_PORT: z.coerce.number().default(587),
-  SMTP_USER: z.string().optional(),
-  SMTP_PASSWORD: z.string().optional(),
-});
+  /* ================== Redis ================== */
+  REDIS_HOST: process.env.REDIS_HOST ?? "127.0.0.1",
+  REDIS_PORT: Number(process.env.REDIS_PORT ?? 6379),
+  REDIS_USERNAME: process.env.REDIS_USERNAME ?? "",
+  REDIS_PASSWORD: process.env.REDIS_PASSWORD ?? "",
 
-export type Config = z.infer<typeof envSchema>;
-export const config: Config = envSchema.parse(process.env);
+  /* ================== SMTP ================== */
+  SMTP_HOST: process.env.SMTP_HOST!,
+  SMTP_PORT: Number(process.env.SMTP_PORT ?? 587),
+  SMTP_USER: process.env.SMTP_USER!,
+  SMTP_PASSWORD: process.env.SMTP_PASSWORD!,
+};
+export const config: Readonly<Config> = Object.freeze(_config);

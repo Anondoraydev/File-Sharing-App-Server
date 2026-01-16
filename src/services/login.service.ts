@@ -1,4 +1,4 @@
- 
+
 import { ZLoginUser } from "../validators/auth.validators.ts";
 import {
   InternalServerError,
@@ -32,6 +32,7 @@ export async function loginService(userData: unknown) {
     const refreshToken = user.generateRefreshToken();
 
     user.refreshToken = refreshToken;
+    user.accessToken = accessToken;
     await user.save();
 
     const finalUser = user.toObject();
