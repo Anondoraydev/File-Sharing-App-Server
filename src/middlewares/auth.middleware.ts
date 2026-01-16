@@ -32,24 +32,3 @@ export const authMiddleware = (
     return next(new UnauthorizedError("Token is invalid"));
   }
 };
-
-export const authGuard = (
-  req: AuthRequest,
-  _res: Response,
-  next: NextFunction
-) => {
-  const token =
-    req.cookies?.accessToken || req.headers.authorization?.split(" ")[1];
-
-  if (!token) throw new UnauthorizedError("Token required to logout");
-
-  try {
-    const decoded = jwt.verify(token, config.ACCESS_TOKEN_SECRET) as {
-      userId: string;
-    };
-    req.userId = decoded.userId;
-    next();
-  } catch {
-    throw new UnauthorizedError("Invalid or expired token");
-  }
-};
