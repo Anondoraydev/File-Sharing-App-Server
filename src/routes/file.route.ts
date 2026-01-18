@@ -3,15 +3,14 @@ import { upload } from "../middlewares/multer.middlewares.ts";
 import {
   downloadFile,
   fileUpload,
-  getFileInfo,
+  getUserFiles,
 } from "../controllers/file.controller.ts";
+import { verifyAuth } from "../middlewares/auth.middleware.ts";
 
 const router: Router = express.Router();
 
-router.post("/files", upload.single("file"), fileUpload);
-
-router.get("/files/:uuid", getFileInfo);
-
-router.post("/files/download/:uuid", downloadFile);
+router.post("/upload", verifyAuth, upload.single("file"), fileUpload);
+router.get("/user", verifyAuth, getUserFiles);
+router.get("/download/:uuid", downloadFile);
 
 export default router;

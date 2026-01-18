@@ -1,57 +1,78 @@
-import type { NextFunction, Request, Response } from "express";
-import { ValidationError } from "../utils/errors/httpErrors.ts";
-import { fileUploadService } from "../services/fileUpload.service.ts";
+import type { Request, Response, NextFunction } from "express";
+import path from "path";
+import { ValidationError, NotFoundError } from "../utils/errors/httpErrors.ts";
+import {
+  fileUploadService,
+  getFileInfoService,
+  getUserFilesService,
+} from "../services/file.service.ts";
 import { CreatedResponse, OKResponse } from "../utils/success/httpSuccess.ts";
-import { getFileInfoService } from "../services/getInfoFile.service.ts";
 
-const fileUpload = async (req: Request, res: Response, next: NextFunction) => {
+// Upload a file
+const fileUpload = async (req: Request, res: Response) => {
   try {
-    const file = req.file;
-    if (!file) {
-      throw new ValidationError("No file uploaded", {});
-    }
+    console.log("req.user:", req.user);
+    console.log("req.file:", req.file);
 
-    const result = await fileUploadService(file);
+    if (!req.user || !req.user.id) throw new Error("User not authenticated");
+    if (!req.file) throw new Error("No file uploaded");
 
-    const fileShareUrl = `${req.protocol}://${req.get("host")}/api/v1/files/${
-      result.uuid
-    }`;
+    const result = await fileUploadService(req.file, req.user.id);
 
-    return res.status(201).json(
-      new CreatedResponse("File uploaded successfully", {
+    res.status(201).json({
+      status: true,
+      message: "File uploaded successfully",
+      data: {
         uuid: result.uuid,
-        fileShareUrl,
-      })
-    );
+        fileShareUrl: ` ${req.protocol}://${req.get("host")}/api/v1/download/${
+          result.uuid
+        } `,
+      },
+    });
   } catch (err) {
-    next(err);
+    console.error("File upload error:", err);
+    res
+      .status(500)
+      .json({ status: false, message: "Internal Server Error", errors: err });
   }
 };
 
-const getFileInfo = async (req: Request, res: Response, next: NextFunction) => {
+// Get all files of logged in user
+const getUserFiles = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { uuid } = req.params;
+    const userId = req.user?.id;
+    if (!userId) throw new ValidationError("User not authenticated", {});
 
-    if (!uuid) {
-      throw new ValidationError("UUID is required", {});
-    }
+    const files = await getUserFilesService(userId);
 
-    const result = await getFileInfoService(uuid);
-
-    const downloadUrl = `${req.protocol}://${req.get(
-      "host"
-    )}/api/v1/files/download/${uuid}`;
-
-    return res.status(200).json(
-      new OKResponse("File info fetched successfully", {
-        ...result,
-        downloadUrl,
-      })
+    res.status(200).json(
+      new OKResponse(
+        "Files fetched successfully",
+        files.map((f) => ({
+          uuid: f.uuid,
+          name: f.fileName,
+          size: f.size,
+          downloadUrl: `${req.protocol}://${req.get(
+            "host"
+          )}/api/files/download/${f.uuid}`,
+        }))
+      )
     );
   } catch (err) {
-    next(err);
+    console.error("Get user files error:", err);
+    res.status(500).json({
+      status: false,
+      message: "Internal Server Error",
+      errors: err instanceof Error ? err.message : err,
+    });
   }
 };
+
+// Download file by UUID
 const downloadFile = async (
   req: Request,
   res: Response,
@@ -59,15 +80,22 @@ const downloadFile = async (
 ) => {
   try {
     const { uuid } = req.params;
+    if (!uuid) throw new ValidationError("UUID is required", {});
 
-    if (!uuid) {
-      throw new ValidationError("UUID is required", {});
-    }
-    const result = await getFileInfoService(uuid);
-    res.download(result.path);
+    const file = await getFileInfoService(uuid);
+    if (!file) throw new NotFoundError("File not found");
+
+    console.log("Downloading file:", file.fileName, "path:", file.path);
+
+    res.download(path.resolve(file.path), file.fileName);
   } catch (err) {
-    next(err);
+    console.error("Download file error:", err);
+    res.status(500).json({
+      status: false,
+      message: "Internal Server Error",
+      errors: err instanceof Error ? err.message : err,
+    });
   }
 };
 
-export { fileUpload, getFileInfo, downloadFile };
+export { fileUpload, getUserFiles, downloadFile };
