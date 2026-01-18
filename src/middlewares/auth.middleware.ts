@@ -1,34 +1,39 @@
+// middlewares/auth.middleware.ts
 import type { Request, Response, NextFunction } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import { UnauthorizedError } from "../utils/errors/httpErrors.ts";
 import { config } from "../config/config.ts";
 
-export interface AuthenticatedRequest extends Request {
-  user?: { _id: string };
-}
-
-export interface AuthRequest extends Request {
-  userId?: string;
-}
-
-export const authMiddleware = (
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  const accessToken = req.headers.authorization || req.cookies.accessToken;
-  if (!accessToken) {
-    return next(new UnauthorizedError("Token is missing"));
+declare global {
+  namespace Express {
+    interface Request {
+      user?: { id: string; email?: string };
+    }
   }
+}
 
+export const verifyAuth = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const decoded = jwt.verify(
-      accessToken,
-      config.ACCESS_TOKEN_SECRET
-    ) as JwtPayload;
-    req.user = { _id: decoded._id };
+    // Authorization header বা custom header থেকে token নিন
+    const token = req.headers.authorization || req.headers["x-access-token"];
+    if (!token) {
+      return res
+        .status(401)
+        .json({ status: false, message: "No token provided" });
+    }
+
+    console.log("Token received:", token);
+
+    // JWT verify
+    const decoded = jwt.verify(token as string, config.REFRESH_TOKEN_SECRET) as  JwtPayload;
+    console.log("Decoded JWT:", decoded);
+
+    // req.user set করুন
+    req.user = { id: decoded._id, email: decoded.email };
     next();
-  } catch (error) {
-    return next(new UnauthorizedError("Token is invalid"));
+  } catch (err) {
+    console.error("verifyAuth error:", err);
+    return res
+      .status(401)
+      .json({ status: false, message: "Invalid token", errors: err });
   }
 };
